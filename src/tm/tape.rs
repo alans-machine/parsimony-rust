@@ -18,7 +18,7 @@ pub trait Tape<S: Clone> {
 }
 
 #[derive(Clone)]
-struct ConcreteTape<S: Clone> {
+pub struct ConcreteTape<S: Clone> {
     blank: S,
     left: HalfTape<S>,
     current: S,
@@ -32,7 +32,7 @@ enum HalfTape<S: Clone> {
 }
 
 impl<S: Clone> HalfTape<S> {
-    fn new() -> HalfTape<S> {
+    fn empty() -> HalfTape<S> {
         HalfTape::Empty
     }
 
@@ -50,6 +50,16 @@ impl<S: Clone> HalfTape<S> {
     }
 }
 
+impl<S:Clone> ConcreteTape<S> {
+    pub fn empty(blank: S) -> ConcreteTape<S> {
+        ConcreteTape {
+            blank: blank.clone(),
+            left: HalfTape::empty(),
+            current: blank.clone(),
+            right: HalfTape::empty()
+        }
+    }
+}
 
 impl<S: Clone> Tape<S> for ConcreteTape<S> {
     fn read(&self) -> S {
@@ -103,3 +113,36 @@ impl<S: Clone> Tape<S> for ConcreteTape<S> {
     }
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn empty_tape_should_read_head() {
+        let t = ConcreteTape::empty("_");
+
+        let symbol = t.read();
+
+        assert_eq!(symbol, t.blank());
+    }
+
+    #[test]
+    fn empty_tape_should_introduce_blanks_when_moved_left() {
+        let mut t = ConcreteTape::empty("_");
+        t = t.left();
+
+        let symbol = t.read();
+
+        assert_eq!(symbol, t.blank());
+    }
+
+    #[test]
+    fn empty_tape_should_introduce_blanks_when_moved_right() {
+        let mut t = ConcreteTape::empty("_");
+        t = t.right();
+
+        let symbol = t.read();
+
+        assert_eq!(symbol, t.blank());
+    }
+}
