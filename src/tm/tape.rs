@@ -113,6 +113,57 @@ impl<S: Clone> Tape<S> for ConcreteTape<S> {
     }
 }
 
+pub struct TapeBuilder<S: Clone> {
+    tape : ConcreteTape<S>,
+}
+
+impl<S: Clone> TapeBuilder<S> {
+    pub fn with_blank(blank: S) -> TapeBuilder<S> {
+        TapeBuilder { tape: ConcreteTape::empty(blank) }
+    }
+
+    pub fn with_current(&self, symbol: S) -> TapeBuilder<S> {
+        TapeBuilder { tape: self.tape.write(symbol) }
+    }
+
+    pub fn with_right_tape(&self, mut symbols: Vec<S>) -> TapeBuilder<S> {
+        symbols.reverse();
+
+        let mut half_tape: HalfTape<S> = HalfTape::empty();
+        for symbol in symbols {
+            half_tape = half_tape.push(symbol)
+        }
+
+        TapeBuilder {
+            tape: ConcreteTape {
+                right: half_tape,
+                .. self.tape.clone()
+            }
+        }
+    }
+
+
+    pub fn with_left_tape(&self, mut symbols: Vec<S>) -> TapeBuilder<S> {
+        symbols.reverse();
+
+        let mut half_tape: HalfTape<S> = HalfTape::empty();
+        for symbol in symbols {
+            half_tape = half_tape.push(symbol)
+        }
+
+        TapeBuilder {
+            tape: ConcreteTape {
+                left: half_tape,
+                .. self.tape.clone()
+            }
+        }
+    }
+
+    pub fn build(&self) -> ConcreteTape<S> {
+        self.tape.clone()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -144,5 +195,35 @@ mod tests {
         let symbol = t.read();
 
         assert_eq!(symbol, t.blank());
+    }
+
+    #[test]
+    fn tape_should_be_loaded_with_initial_symbols_on_the_right() {
+        let mut t = TapeBuilder::with_blank("_")
+            .with_current("a")
+            .with_right_tape(vec!["b", "c", "d"])
+            .build();
+
+        let mut symbol = t.read();
+        assert_eq!(symbol, "a");
+
+        t = t.right();
+        symbol = t.read();
+        assert_eq!(symbol, "b");
+    }
+
+    #[test]
+    fn tape_should_be_loaded_with_initial_symbols_on_the_left() {
+        let mut t = TapeBuilder::with_blank("_")
+            .with_current("a")
+            .with_left_tape(vec!["b", "c", "d"])
+            .build();
+
+        let mut symbol = t.read();
+        assert_eq!(symbol, "a");
+
+        t = t.left();
+        symbol = t.read();
+        assert_eq!(symbol, "b");
     }
 }
