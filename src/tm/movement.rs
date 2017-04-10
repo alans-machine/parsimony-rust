@@ -1,8 +1,10 @@
-//! Movement for a Turing machine is restricted to Left and Right. This tells
-//! which way the Turing machines read/write head should move after a state
-//! transition.
+//! Movement describes the movement of the read/write head of a Turing machine.
 
+/// The ways the read/write head can move is restricted to Left and Right. The movement is performed after a state
+/// change.
 pub enum Movement {
+    /// Moves the tape left.
     Left,
+    /// Moves the tape right.
     Right,
 }

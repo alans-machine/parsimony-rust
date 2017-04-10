@@ -2,23 +2,25 @@
 //!
 //! You can read from it, write to it and move it left and right.
 
+/// The contract a concrete Tape should adhere to.
 pub trait Tape<S: Clone> {
     /// Reads the symbol at the location of the head of the Turing machine
     fn read(&self) -> S;
 
-    // Writes symbol at the location of the head of the Turing machine
+    /// Writes symbol at the location of the head of the Turing machine
     fn write(&self, symbol: S) -> Self;
 
-    // The blank symbol for this tape
+    /// The blank symbol for this tape
     fn blank(&self) -> S;
 
-    // Move the head of the Turing machine to the left on this tape
+    /// Move the head of the Turing machine to the left on this tape
     fn left(&self) -> Self;
 
-    // Move the head of the Turing machine to the right on this tape
+    /// Move the head of the Turing machine to the right on this tape
     fn right(&self) -> Self;
 }
 
+/// An type implementing the `Tape` trait.
 #[derive(Clone)]
 pub struct ConcreteTape<S: Clone> {
     blank: S,
@@ -53,6 +55,10 @@ impl<S: Clone> HalfTape<S> {
 }
 
 impl<S:Clone> ConcreteTape<S> {
+    /// Create an empty `ConcreteTape`. The argument will be used to as the
+    /// blank symbol for this tape. This is necessary when the read/write head
+    /// moves into unexplored territory. If there is nothing on the tape yet, it
+    /// will provide the blank symbol.
     pub fn empty(blank: S) -> ConcreteTape<S> {
         ConcreteTape {
             blank: blank.clone(),
@@ -115,19 +121,23 @@ impl<S: Clone> Tape<S> for ConcreteTape<S> {
     }
 }
 
+/// Builder for `ConcreteTape`.
 pub struct TapeBuilder<S: Clone> {
     tape : ConcreteTape<S>,
 }
 
 impl<S: Clone> TapeBuilder<S> {
+    /// Set the blank symbol for this tape.
     pub fn with_blank(blank: S) -> TapeBuilder<S> {
         TapeBuilder { tape: ConcreteTape::empty(blank) }
     }
 
+    /// Set the symbol the read/write head is currently scanning
     pub fn with_current(&self, symbol: S) -> TapeBuilder<S> {
         TapeBuilder { tape: self.tape.write(symbol) }
     }
 
+    /// Sets the tape to the right of the read/write head.
     pub fn with_right_tape(&self, mut symbols: Vec<S>) -> TapeBuilder<S> {
         symbols.reverse();
 
@@ -144,7 +154,7 @@ impl<S: Clone> TapeBuilder<S> {
         }
     }
 
-
+    /// Sets the tape to the left of the read/write head.
     pub fn with_left_tape(&self, mut symbols: Vec<S>) -> TapeBuilder<S> {
         symbols.reverse();
 
@@ -161,6 +171,7 @@ impl<S: Clone> TapeBuilder<S> {
         }
     }
 
+    /// Build the described tape.
     pub fn build(&self) -> ConcreteTape<S> {
         self.tape.clone()
     }
