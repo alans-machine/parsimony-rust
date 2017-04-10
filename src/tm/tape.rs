@@ -1,4 +1,6 @@
 //! Tape is a representation of the Turing machine infinite tape.
+//!
+//! You can read from it, write to it and move it left and right.
 
 pub trait Tape<S: Clone> {
     /// Reads the symbol at the location of the head of the Turing machine
