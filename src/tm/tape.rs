@@ -122,6 +122,18 @@ impl<S: Clone> Tape<S> for ConcreteTape<S> {
 }
 
 /// Builder for `ConcreteTape`.
+///
+/// # Example
+/// The builder can be used to construct a `ConcreteTape`.
+///
+/// ```
+/// use parsimony::tm::tape::TapeBuilder;
+///
+/// let tape = TapeBuilder::with_blank("_")
+///     .with_current("a")
+///     .with_right_tape(vec!["b", "c"])
+///     .build();
+/// ```
 pub struct TapeBuilder<S: Clone> {
     tape : ConcreteTape<S>,
 }
