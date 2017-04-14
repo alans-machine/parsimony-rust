@@ -5,6 +5,7 @@
 //! to write and which way to move the tape.
 
 use std::collections::HashMap;
+use std::hash::Hash;
 use super::movement::Movement;
 
 /// `TransitionKey` describe the current context of the Turing machine. I.e. the
@@ -49,6 +50,23 @@ impl <Q, S> TransitionValue<Q, S> {
 /// A Turing machine is defined by the transitions it can make.
 pub type Transitions<Q, S> = HashMap<TransitionKey<Q, S>, TransitionValue<Q, S>>;
 
+/// Lookup a `TransitionKey`, returning a `TransitionValue`
+///
+/// This trait specifies the contract any collection of Transitions should adhere to.
+pub trait Lookup<Q, S> {
+    /// Lookup a specific `TransitionKey` in self.
+    fn lookup(&self, key: &TransitionKey<Q, S>) -> Option<&TransitionValue<Q, S>>;
+}
+
+
+impl <Q, S> Lookup<Q,S> for Transitions<Q, S> where Q: Eq + Hash, S: Eq + Hash {
+    /// Lookup a `TransitionKey`
+    fn lookup(&self, key: &TransitionKey<Q, S>) -> Option<&TransitionValue<Q, S>> {
+       self.get(key)
+    }
+}
+
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -56,6 +74,26 @@ mod tests {
 
     #[test]
     fn should_create_transitions() {
+        let mut transitions: Transitions<u32, &str> = Transitions::new();
+
+        transitions.insert(
+            TransitionKey::new(0, "I"),
+            TransitionValue::new(0, "I", Movement::Right));
+        transitions.insert(
+            TransitionKey::new(0, "_"),
+            TransitionValue::new(1, "I", Movement::Left));
+        transitions.insert(
+            TransitionKey::new(1, "I"),
+            TransitionValue::new(1, "I", Movement::Left));
+        transitions.insert(
+            TransitionKey::new(1, "_"),
+            TransitionValue::new(2, "_", Movement::Right));
+
+        assert_eq!(transitions.len(), 4);
+    }
+
+    #[test]
+    fn should_lookup_transition() {
         let mut transitions: Transitions<u32, &str> = Transitions::new();
         transitions.insert(
             TransitionKey::new(0, "I"),
@@ -69,5 +107,13 @@ mod tests {
         transitions.insert(
             TransitionKey::new(1, "_"),
             TransitionValue::new(2, "_", Movement::Right));
+
+        let value = transitions.lookup(&TransitionKey::new(0, "I"));
+
+        match value {
+            Some(_) => assert!(true),
+
+            None => assert!(false, "value not found"),
+        }
     }
 }
