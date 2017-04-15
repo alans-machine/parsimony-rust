@@ -19,3 +19,4 @@
 pub mod movement;
 pub mod tape;
 pub mod transition;
+pub mod turing;
