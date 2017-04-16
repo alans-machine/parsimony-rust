@@ -2,6 +2,7 @@
 
 /// The ways the read/write head can move is restricted to Left and Right. The movement is performed after a state
 /// change.
+#[derive(Clone)]
 pub enum Movement {
     /// Moves the tape left.
     Left,
