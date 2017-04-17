@@ -1,7 +1,7 @@
 extern crate parsimony;
 
-use parsimony::tm::turing::Machine;
-use parsimony::tm::tape::TapeBuilder;
+use parsimony::tm::unmodifiable::turing::Machine;
+use parsimony::tm::unmodifiable::tape::TapeBuilder;
 use parsimony::tm::transition::{Transitions, TransitionKey, TransitionValue};
 use parsimony::tm::movement::Movement;
 

@@ -17,6 +17,5 @@
 //! the Turing machine's infinite tape.
 
 pub mod movement;
-pub mod tape;
+pub mod unmodifiable;
 pub mod transition;
-pub mod turing;

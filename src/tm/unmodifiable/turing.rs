@@ -2,9 +2,9 @@
 //!
 
 use std::hash::Hash;
-use super::transition::{Lookup, Transitions, TransitionKey};
+use super::super::transition::{Lookup, Transitions, TransitionKey};
 use super::tape::{Tape, ConcreteTape};
-use super::movement::Movement;
+use super::super::movement::Movement;
 
 /// The actual Turing machine
 #[derive(Debug)]
@@ -48,9 +48,9 @@ impl <Q, S> Machine<Q, S> where S: Clone + Eq + Hash, Q: Clone + Eq + Hash {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use super::super::movement::Movement;
+    use super::super::super::movement::Movement;
     use super::super::tape::TapeBuilder;
-    use super::super::transition::{Transitions, TransitionKey, TransitionValue};
+    use super::super::super::transition::{Transitions, TransitionKey, TransitionValue};
 
     #[test]
     fn should_step_through_a_program() {

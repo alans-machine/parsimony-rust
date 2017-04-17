@@ -127,7 +127,7 @@ impl<S: Clone> Tape<S> for ConcreteTape<S> {
 /// The builder can be used to construct a `ConcreteTape`.
 ///
 /// ```
-/// use parsimony::tm::tape::TapeBuilder;
+/// use parsimony::tm::unmodifiable::tape::TapeBuilder;
 ///
 /// let tape = TapeBuilder::with_blank("_")
 ///     .with_current("a")
