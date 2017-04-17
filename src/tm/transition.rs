@@ -4,13 +4,12 @@
 //! reading from the tape, a transition tells what state comes next, what symbol
 //! to write and which way to move the tape.
 
-use std::hash::Hash;
 use super::movement::Movement;
 
 /// `TransitionKey` describe the current context of the Turing machine. I.e. the
 /// state the Turing machine is in and the symbol the read/write head is
 /// scanning.
-#[derive(Clone,Hash,PartialEq,Eq)]
+#[derive(Clone, PartialEq, Eq, Debug)]
 pub struct TransitionKey<Q, S> {
     /// The state the Turing machine is in.
     pub state: Q,
@@ -28,7 +27,7 @@ impl <Q, S> TransitionKey<Q, S> {
 /// `TransitionValue` describes the next context of the Turing machine, I.e. the
 /// state is should transition in, the symbol that is should write and the
 /// movement of the tape.
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct TransitionValue<Q, S> where Q: Clone, S: Clone {
     /// The state the Turing machine will be in after the transition.
     pub state: Q,
@@ -48,7 +47,7 @@ impl <Q, S> TransitionValue<Q, S> where Q: Clone, S: Clone {
 /// Transitions are used to describe the entire operation of a Turing machine.
 ///
 /// A Turing machine is defined by the transitions it can make.
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub enum Transitions<Q, S> where Q: Clone, S: Clone {
     /// Head of the linked list
     Transition(TransitionKey<Q,S>, TransitionValue<Q,S>, Box<Transitions<Q,S>>),
@@ -86,7 +85,7 @@ pub trait Lookup<Q, S> where Q: Clone, S: Clone {
 }
 
 
-impl <Q, S> Lookup<Q,S> for Transitions<Q, S> where Q: Clone + Eq + Hash, S: Clone + Eq + Hash {
+impl <Q, S> Lookup<Q,S> for Transitions<Q, S> where Q: Clone + Eq, S: Clone + Eq {
     /// Lookup a `TransitionKey`
     fn lookup(&self, target: &TransitionKey<Q, S>) -> Option<TransitionValue<Q, S>> {
         match *self {

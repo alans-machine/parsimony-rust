@@ -21,7 +21,7 @@ pub trait Tape<S: Clone> {
 }
 
 /// An type implementing the `Tape` trait.
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct ConcreteTape<S: Clone> {
     blank: S,
     left: HalfTape<S>,
@@ -29,7 +29,7 @@ pub struct ConcreteTape<S: Clone> {
     right: HalfTape<S>,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 enum HalfTape<S: Clone> {
     Cell(S, Box<HalfTape<S>>),
     Empty,

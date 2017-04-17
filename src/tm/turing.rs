@@ -7,6 +7,7 @@ use super::tape::{Tape, ConcreteTape};
 use super::movement::Movement;
 
 /// The actual Turing machine
+#[derive(Debug)]
 pub struct Machine<Q, S> where Q: Clone + Eq + Hash, S: Clone + Eq + Hash  {
     state: Q,
     tape: ConcreteTape<S>,
